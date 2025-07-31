@@ -1,0 +1,138 @@
+---
+title: "Untitled"
+output: html_document
+date: "2025-01-30"
+---
+
+```{r setup, include=FALSE}
+setwd("N:/Genomics/Public/LSDV_Tiffany/Microbiology Conference")
+library(ggplot2)
+library(ggpubr)
+library(tidyverse)
+library(cowplot)
+library(ggExtra)
+
+dual <- read.csv("dual_graph.csv")
+
+first <- data.frame(gene <- dual$genes, branch_length <- dual$branch_lengths, dn_ds <- dual$ls)
+first[4] <- dual$lg
+first[5] <- dual$sg
+
+colnames(first)[1] <- "genes"
+colnames(first)[2] <- "branch_length"
+colnames(first)[3] <- "dn_ds"
+colnames(first)[4] <- "lg"
+colnames(first)[5] <- "sg"
+
+first$lg <- as.numeric(first$lg)
+
+omit.lg <- na.omit(first$lg)
+omit.sg <- na.omit(first$sg)
+omit.ls <- na.omit(first$dn_ds)
+scaleFactor <- max(first$branch_length)/max(omit.ls)
+
+first$genes <- as.factor(first$genes)
+
+
+#bar charts
+
+bl <- ggplot(first, aes(x = genes, y = branch_length)) + 
+  geom_col() + 
+  geom_point(aes(x = genes, y = branch_length), alpha = 0) +
+  geom_hline(yintercept = quantile(first$branch_length, probs = c(.95)), linetype = "dashed", size = 0.5) +
+  scale_x_discrete(breaks = seq(0,159, by = 5)) +
+  scale_y_continuous(name = "Branch Length") + 
+  xlab("") 
+
+l_s <- ggplot(first, aes(x = genes, y = dn_ds)) + 
+  geom_col(aes(colour = ("LSDV/SPPV")), fill = ("red")) + 
+  geom_point(aes(x = genes, y = dn_ds), alpha = 0) +
+  geom_hline(yintercept = quantile(omit.ls, probs = c(.95)), linetype = "dashed", size = 0.5) +
+  xlab("") +
+  ylab("dN/dS") +
+  scale_x_discrete(breaks = seq(0,159, by = 5)) +
+   coord_cartesian(ylim = c(0,13)) +
+  scale_colour_manual("", 
+            breaks = c("LSDV/SPPV"),
+                      values = c("NA")) + 
+  theme(legend.key.size = unit(10, 'pt'), 
+        legend.position = c(0.5, 0.95), 
+        legend.background = element_rect(fill = "NA"))
+
+
+l_g <- ggplot(first, aes(x = genes, y = lg)) + 
+  geom_col(aes(colour = ("LSDV/GTPV")), fill = "blue") + 
+  geom_point(aes(x = genes, y = lg), alpha = 0) +
+  geom_hline(yintercept = quantile(omit.lg, probs = c(.95)), linetype = "dashed", size = 0.5) +
+  xlab("") + 
+  ylab("dN/dS") +
+  scale_x_discrete(breaks = seq(0,159, by = 5)) +
+   coord_cartesian(ylim = c(0,13)) +
+  scale_colour_manual("", 
+            breaks = c("LSDV/GTPV"),
+                      values = c("NA")) + 
+  theme(legend.key.size = unit(10, 'pt'), 
+        legend.position = c(0.5, 0.95), 
+        legend.background = element_rect(fill = "NA"))
+
+s_g <- ggplot(first, aes(x = genes, y = sg)) + 
+   geom_col(aes(colour = ("SPPV/GTPV")), fill = "green") +  
+   geom_point(aes(x = genes, y = sg), alpha = 0) +
+   geom_hline(yintercept = quantile(omit.sg, probs = c(.95)) , linetype = "dashed", size = 0.5) +
+   scale_x_discrete(name = "Genes", breaks = seq(0,159, by = 5)) + 
+   ylab("dN/dS") +
+   coord_cartesian(ylim = c(0,13)) +
+   scale_colour_manual("", 
+            breaks = c("SPPV/GTPV"),
+                       values = c("NA")) + 
+  theme(legend.key.size = unit(10, 'pt'), 
+        legend.position = c(0.5, 0.95), 
+        legend.background = element_rect(fill = "NA")) 
+
+combination <- ggarrange(bl, l_s, l_g, s_g, nrow = 4, align = "hv")
+
+#densigram 
+bl1 <- ggMarginal(bl, type = "densigram", size = 7)
+l_s1 <- ggMarginal(l_s, type = "densigram", size = 7)
+l_g1 <- ggMarginal(l_g, type = "densigram", size = 7)
+s_g1 <- ggMarginal(s_g, type = "densigram", size = 7)
+combination1 <- ggarrange(bl1, l_s1, l_g1, s_g1, nrow = 4, align = "hv")
+
+
+
+
+
+
+#original graph
+p1 <- ggplot(first, aes(x = first$genes)) + 
+  geom_point(aes(y = branch_length, colour = "Branch Length")) + 
+  geom_point(aes(y = dn_ds * scaleFactor, colour = "LSDV/SPPV"), shape = 2) + 
+  geom_point(aes(y = lg * scaleFactor, colour = "LSDV/GTPV"), shape = 2) + 
+  geom_point(aes(y = sg * scaleFactor, colour = "SPPV/GTPV"), shape = 2) + 
+  geom_line(aes(y = branch_length, colour = "Branch Length" )) + 
+  geom_line(aes(y = dn_ds * scaleFactor, colour = "LSDV/SPPV")) + 
+  geom_line(aes(y = lg * scaleFactor, colour = "LSDV/GTPV")) + 
+  geom_line(aes(y = sg * scaleFactor, colour = "SPPV/GTPV")) + 
+  scale_y_continuous(name = "Branch Length", sec.axis = sec_axis(~./scaleFactor, name = "dN/dS")) +  
+  ggtitle("Branch Lengths and dN/dS of CaPPV genes") + theme(plot.title = element_text(hjust = 0.5)) + scale_colour_manual("", 
+            breaks = c("Branch Length", "LSDV/SPPV", "LSDV/GTPV", "SPPV/GTPV"),
+                      values = c("black", "red", "blue", "green"))  +
+  scale_x_continuous("Genes", labels = as.character(first$genes), breaks = first$genes, expand = c(0.005,0.5)) + theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
+
+#playing around
+layer1 + geom_smooth(aes(y = dn_ds * scaleFactor, colour = "LSDV/SPPV"), fill = NA) + geom_smooth(aes(y = lg * scaleFactor, colour = "LSDV/GTPV"), fill = NA) + geom_smooth(aes(y = sg * scaleFactor, colour = "SPPV/GTPV"), fill = NA) + scale_y_continuous(name = "Branch Length", sec.axis = sec_axis(~./scaleFactor, name = "dN/dS")) +  ggtitle("Branch Lengths and dN/dS of CaPPV genes") + theme(plot.title = element_text(hjust = 0.5)) + scale_colour_manual("", 
+            breaks = c("LSDV/SPPV", "LSDV/GTPV", "SPPV/GTPV"),
+                      values = c("red", "blue", "green"), name = "legend") + theme(legend.key.size = unit(0.5, 'pt')) 
+
+smooth <- ggplot(first, aes(x = genes)) + geom_point(aes(y = branch_length, colour = "Branch Length")) + geom_point(aes(y = dn_ds * scaleFactor, colour = "LSDV/SPPV"), shape = 2) + geom_point(aes(y = lg * scaleFactor, colour = "LSDV/GTPV"), shape = 2) + geom_point(aes(y = sg * scaleFactor, colour = "SPPV/GTPV"), shape = 2) + geom_smooth(aes(y = branch_length, colour = "Branch Length" ), fill = NA) + geom_smooth(aes(y = dn_ds * scaleFactor, colour = "LSDV/SPPV"), fill = NA) + geom_smooth(aes(y = lg * scaleFactor, colour = "LSDV/GTPV"), fill = NA) + geom_smooth(aes(y = sg * scaleFactor, colour = "SPPV/GTPV"), fill = NA) + scale_y_continuous(name = "Branch Length", sec.axis = sec_axis(~./scaleFactor, name = "dN/dS")) +  ggtitle("Branch Lengths and dN/dS of CaPPV genes") + theme(plot.title = element_text(hjust = 0.5)) + scale_colour_manual("", 
+            breaks = c("Branch Length", "LSDV/SPPV", "LSDV/GTPV", "SPPV/GTPV"),
+                      values = c("black", "red", "blue", "green"))
+point <- ggplot(first, aes(x = genes)) + geom_point(aes(y = branch_length, colour = "Branch Length" )) + geom_point(aes(y = dn_ds * scaleFactor, colour = "LSDV/SPPV"), shape = 2) + geom_point(aes(y = lg * scaleFactor, colour = "LSDV/GTPV"), shape = 2) + geom_point(aes(y = sg * scaleFactor, colour = "SPPV/GTPV"), shape = 2) + scale_colour_manual("", 
+            breaks = c("Branch Length", "LSDV/SPPV", "LSDV/GTPV", "SPPV/GTPV"),
+                      values = c("black", "red", "blue", "green"))
+smooth + point
+
+
+layer1 <- ggplot(first, aes(x = genes)) +  geom_point(aes(y = dn_ds * scaleFactor, colour = "LSDV/SPPV"), shape = 2) + geom_point(aes(y = lg * scaleFactor, colour = "LSDV/GTPV"), shape = 2) + geom_point(aes(y = sg * scaleFactor, colour = "SPPV/GTPV"), shape = 2) + geom_line(aes(y = branch_length, colour = "Branch Length" )) + geom_line(aes(y = dn_ds * scaleFactor, colour = "LSDV/SPPV")) + geom_line(aes(y = lg * scaleFactor, colour = "LSDV/GTPV")) + geom_line(aes(y = sg * scaleFactor, colour = "SPPV/GTPV")) + scale_y_continuous(name = "Branch Length", sec.axis = sec_axis(~./scaleFactor, name = "dN/dS")) +  ggtitle("Branch Lengths and dN/dS of CaPPV genes") + theme(plot.title = element_text(hjust = 0.5)) + scale_colour_manual("", 
+            breaks = c("Branch Length", "LSDV/SPPV", "LSDV/GTPV", "SPPV/GTPV"),
+                      values = c("black", "red", "blue", "green"))  
