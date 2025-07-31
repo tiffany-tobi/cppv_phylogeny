@@ -1,0 +1,39 @@
+library(ape)
+library(EnvNJ)
+
+KX8 <- gsub('[\n]', '', KX8)
+KX7 <- gsub('[\n]', '', KX7)
+OQ5 <- gsub('[\n]', '', OQ5)
+NC_004002 <- gsub('[\n]', '', NC_004002) 
+NC_004003 <- gsub('[\n]', '', NC_004003)
+
+
+write.dna(KX8, file="KX8.fasta", format="fasta", append=F, nbcol=10, colsep="", colw=nchar(KX8), indent = NULL)
+write.dna(KX7, file="KX7.fasta", format="fasta", append=F, nbcol=10, colsep="", colw=nchar(KX7), indent = NULL)
+write.dna(OQ5, file="OQ5.fasta", format="fasta", append=F, nbcol=10, colsep="", colw=nchar(OQ5), indent = NULL)
+write.dna(NC_004002, file="NC_004002.fasta", format="fasta", append=F, nbcol=10, colsep="", colw=nchar(NC_004002), indent = NULL)
+write.dna (NC_004003, file="NC_004003.fasta", format="fasta", append=F, nbcol=10, colsep="", colw=nchar(NC_004003), indent = NULL)
+
+
+fastaconc(otus=c('KX8', 'KX7', 'OQ5', 'NC_004002', 'NC_004003'), out.file="./LD156forward.fasta")
+
+/mnt/lustre/RDS-live/downing/miniconda3/bin/raxml-ng --all --msa "LD156forward.fasta" --model GTR+G --prefix LD156forward--seed 21231 --bs-metric fbp, tbe --redo
+hyphy fubar --alignment LD156forward.fasta --tree LD156forward--seed.raxml.bestTree --grid 10 --non-zero Yes &> LD156.out
+
+-----------------------------------------------------------------------------------------------------------------------------------
+KX8 <- gsub('[\n]', '', KX8)
+KX7 <- gsub('[\n]', '', KX7)
+OQ5 <- gsub('[\n]', '', OQ5)
+NC_004002 <- gsub('[\n]', '', NC_004002) 
+NC_004003 <- gsub('[\n]', '', NC_004003)
+
+write.dna(KX8, file="KX8.fasta", format="fasta", append=F, nbcol=10, colsep="", colw=nchar(KX8), indent = NULL)
+write.dna(KX7, file="KX7.fasta", format="fasta", append=F, nbcol=10, colsep="", colw=nchar(KX7), indent = NULL)
+write.dna(OQ5, file="OQ5.fasta", format="fasta", append=F, nbcol=10, colsep="", colw=nchar(OQ5), indent = NULL)
+write.dna(NC_004002, file="NC_004002.fasta", format="fasta", append=F, nbcol=10, colsep="", colw=nchar(NC_004002), indent = NULL)
+write.dna (NC_004003, file="NC_004003.fasta", format="fasta", append=F, nbcol=10, colsep="", colw=nchar(NC_004003), indent = NULL)
+
+fastaconc(otus=c('KX8', 'KX7', 'OQ5', 'NC_004002', 'NC_004003'), out.file="./LD156nsc.fasta")
+
+/mnt/lustre/RDS-live/downing/miniconda3/bin/raxml-ng --all --msa "LD156nsc.fasta" --model GTR+G --prefix LD156nsc--seed 21231 --bs-metric fbp, tbe --redo
+hyphy fubar --alignment LD156nsc.fasta --tree LD156nsc--seed.raxml.bestTree --grid 10 --non-zero Yes &> LD156.out
