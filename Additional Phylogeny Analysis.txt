@@ -1,0 +1,24 @@
+library(phangorn)
+library(ape)
+
+cat *TBE > trees.tre
+
+#Robinson-Foulds Distance to measue heterogenity
+rf_distances <- RF.dist(trees)  # Compute RF distance matrix
+heatmap(as.matrix(rf_distances))  # Visualize as a heatmap
+mds <- cmdscale(as.matrix(rf_distances))  # MDS
+plot(mds[,1], mds[,2], col="blue", pch=19, main="MDS of RF Distances")
+dist <- hclust(dist(rf_distances)) #dendogram that highlights unique topologies
+plot(dist)
+
+#Unique topologies
+trees <- read.tree("trees.tre") 
+unique_topologies <- unique(trees)  # Find unique topologies
+table(sapply(trees, write.tree))
+
+#Branch Length
+if(is.list(trees)){
+  branch_lengths <- sapply(trees, function(tree) sum(tree$edge.length) ) }
+else{ # If the file contains a single tree
+  branch_lengths <-sum(trees$edge.length)}
+
