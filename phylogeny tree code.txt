@@ -1,0 +1,36 @@
+library(phytools)
+library(ape)
+library(ggtree)
+library(ggplot2)
+library(ggpubr)
+
+t <- read.tree("CPPV.raxml.bestTree")
+t$node.label <- round(100*as.numeric(t$node.label),0)
+tree1 <- midpoint.root(ladderize(t))
+tree1$node.label <- round(100*as.numeric(tree1$node.label))
+
+plot <- ggtree(tree1) + 
+  geom_treescale(0,0, offset = .5) + theme_tree2() +
+  geom_cladelabel(node=186, label="LSDV Clade 1.2", offset=.0003, color="gold", fontsize = 5) +
+  geom_cladelabel(node=248, label="SPPV", offset=.0003, color="green", fontsize = 5) +  
+  geom_cladelabel(node=236, label="GTPV", offset=.0003, color="blue", fontsize = 5) +
+  geom_cladelabel(node=267, label="LSDV Clade 1.1", offset=.0003, color="red", fontsize = 5) +
+  geom_cladelabel(node=182, label="LSDV Clade 2", offset=.0003, color="purple", fontsize = 5) +
+  coord_cartesian(clip='off')
+
+ggsave("phylogenytree.pdf", width = 12, height = 8)
+
+
+ggtree(tree1) + geom_tiplab(size = 1.75)
+  geom_text(aes(label=node),hjust=-.3, size = 2) 
+
+224 - clade 1.2
+201 - clade 1.1
+157 - clade 2 (oq5)
+
+236 - GTPV
+248 - SPPV
+
+185 - LSDV
+186 - CLADE 1.2
+267 - CLADE 1.1
