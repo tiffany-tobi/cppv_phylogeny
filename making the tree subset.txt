@@ -1,0 +1,120 @@
+library(ggplot2)
+library
+
+
+#LSDV013a
+new_tree <- list()
+tree <- read.tree("LD013a--seed.raxml.supportTBE")
+tree$node.label <- round(100 * as.numeric(tree$node.label), 0)
+ggtree_obj <- ggtree(midpoint.root(ladderize(tree)))
+tree_data <- ggtree_obj$data
+tree_data$file_id <- "LSDV013a"
+new_tree[[id]] <- tree_data
+
+new_tree <- bind_rows(new_tree)
+
+gg.LSDV013a <- ggplot(new_tree, aes(x = x, y = y)) + geom_tree() +
+  geom_tiplab(aes(label = label, fill = label), geom="label", hjust = 0, size = 3.75) +
+  geom_treescale(x = 0, y = -0.05) +
+  theme_tree2(plot.margin = margin(10, 40, 8, 30)) + 
+  facet_wrap(~file_id) + theme(
+  strip.text = element_text(size = 16)) +
+  coord_cartesian(clip = 'off') + theme(legend.position="none")
+
+#LSDV026a
+new_tree <- list()
+tree <- read.tree("LD26a--seed.raxml.supportTBE")
+tree$node.label <- round(100 * as.numeric(tree$node.label), 0)
+ggtree_obj <- ggtree(midpoint.root(ladderize(tree)))
+tree_data <- ggtree_obj$data
+tree_data$file_id <- "LSDV026a"
+new_tree[[id]] <- tree_data
+
+new_tree <- bind_rows(new_tree)
+
+gg.LSDV026a <- ggplot(new_tree, aes(x = x, y = y)) + geom_tree() +
+  geom_tiplab(aes(label = label, fill = label), geom="label", hjust = 0, size = 3.75) +
+  geom_treescale(x = 0, y = -0.05) +
+  theme_tree2(plot.margin = margin(10, 40, 8, 26)) + 
+  facet_wrap(~file_id) + theme(
+  strip.text = element_text(size = 16)) + coord_cartesian(clip = 'off') + theme(legend.position="none")
+
+#LSDV026b
+new_tree <- list()
+tree <- read.tree("LD26b--seed.raxml.supportTBE")
+tree$node.label <- round(100 * as.numeric(tree$node.label), 0)
+ggtree_obj <- ggtree(midpoint.root(ladderize(tree)))
+tree_data <- ggtree_obj$data
+tree_data$file_id <- "LSDV026b"
+new_tree[[id]] <- tree_data
+
+new_tree <- bind_rows(new_tree)
+
+gg.LSDV026b <- ggplot(new_tree, aes(x = x, y = y)) + geom_tree() +
+  geom_tiplab(aes(label = label, fill = label), geom="label", hjust = 0, size = 3.75) +
+  geom_treescale(x = 0, y = -0.05) +
+  theme_tree2(plot.margin = margin(10, 60, 8, 30)) + 
+  facet_wrap(~file_id) + theme(
+  strip.text = element_text(size = 16)) + coord_cartesian(clip = 'off') + theme(legend.position="none")
+
+#LSDV132
+new_tree <- list()
+tree <- read.tree("LD132--seed.raxml.supportTBE")
+tree$node.label <- round(100 * as.numeric(tree$node.label), 0)
+ggtree_obj <- ggtree(midpoint.root(ladderize(tree)))
+tree_data <- ggtree_obj$data
+tree_data$file_id <- "LSDV132"
+new_tree[[id]] <- tree_data
+
+new_tree <- bind_rows(new_tree)
+
+gg.LSDV132 <- ggplot(new_tree, aes(x = x, y = y)) + geom_tree() +
+  geom_tiplab(aes(label = label, fill = label), geom="label", hjust = 0, size = 3.75) +
+  geom_treescale(x = 0, y = -0.05) +
+  theme_tree2(plot.margin = margin(10, 45, 8, 30)) + 
+  facet_wrap(~file_id) + theme(
+  strip.text = element_text(size = 16)) + coord_cartesian(clip = 'off') + theme(legend.position="none")
+
+#LSDV136
+new_tree <- list()
+tree <- read.tree("LD136--seed.raxml.supportTBE")
+tree$node.label <- round(100 * as.numeric(tree$node.label), 0)
+ggtree_obj <- ggtree(midpoint.root(ladderize(tree)))
+tree_data <- ggtree_obj$data
+tree_data$file_id <- "LSDV136"
+new_tree[[id]] <- tree_data
+
+new_tree <- bind_rows(new_tree)
+
+gg.LSDV136 <- ggplot(new_tree, aes(x = x, y = y)) + geom_tree() +
+  geom_tiplab(aes(label = label, fill = label), geom="label", hjust = 0, size = 3.75) +
+  geom_treescale(x = 0, y = -0.05) +
+  theme_tree2(plot.margin = margin(10, 50, 8, 30)) + 
+  facet_wrap(~file_id) + theme(
+  strip.text = element_text(size = 16)) + coord_cartesian(clip = 'off') + theme(legend.position="none")
+
+
+#LSDV153
+new_tree <- list()
+tree <- read.tree("LD153--seed.raxml.supportTBE")
+tree$node.label <- round(100 * as.numeric(tree$node.label), 0)
+ggtree_obj <- ggtree(midpoint.root(ladderize(tree)))
+tree_data <- ggtree_obj$data
+tree_data$file_id <- "LSDV153"
+new_tree[[id]] <- tree_data
+
+new_tree <- bind_rows(new_tree)
+
+gg.LSDV153 <- ggplot(new_tree, aes(x = x, y = y)) + geom_tree() +
+  geom_tiplab(aes(label = label, fill = label), geom="label", hjust = 0, size = 3.75) +
+  geom_treescale(x = 0, y = -0.05) +
+  theme_tree2(plot.margin = margin(10, 60, 8, 26)) + 
+  facet_wrap(~file_id) + theme(
+  strip.text = element_text(size = 16)) + coord_cartesian(clip = 'off') + theme(legend.position="none")
+
+plot <- (gg.LSDV013a|gg.LSDV026a|gg.LSDV026b)/(gg.LSDV132|gg.LSDV136|gg.LSDV153)
+
+
+ggsave("subset.pdf", width = 18, height =9)
+
+
