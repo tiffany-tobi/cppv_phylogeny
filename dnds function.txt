@@ -1,0 +1,35 @@
+library(ape)
+library(EnvNJ)
+ 
+DNDS <- function(x, sample) {
+if (x < 10 ) {
+     gene <- paste(c("LD00", x), collapse = "")}
+if (x >= 10 && x < 100){
+    gene <- paste(c("LD0", x), collapse = "") }
+if (x >= 100) {
+    gene <- paste(c("LD", x), collapse = "")}
+
+workdir <- file.path("/mnt/lustre/RDS-live/tobi/PHYLOGENY/phylo", gene)
+
+setwd(workdir)
+
+if (x < 10 ) {
+     name1 <- paste(c("DnDs_LD00", x), collapse = "") 
+    fastaconc(otus=c('KX894508', 'NC_004002.1', 'NC_004003.1'), out.file=paste(c("./", name1, ".fasta"), collapse = ""))
+  }
+  if (x >= 10 && x < 100){
+    name1 <- paste(c("DnDs_LD0", x), collapse = "") 
+    fastaconc(otus=c('KX894508', 'NC_004002.1', 'NC_004003.1'), out.file=paste(c("./", name1, ".fasta"), collapse = ""))
+  }
+  if (x >= 100) {
+    name1 <- paste(c("DnDs_LD", x), collapse = "") 
+    fastaconc(otus=c('KX894508', 'NC_004002.1', 'NC_004003.1'), out.file=paste(c("./", name1, ".fasta"), collapse = ""))
+  }
+
+var <- paste0(name1, ".fasta")
+seq1 <- read.dna(var, format = "fasta")
+m2 <- dnds(seq1, code =1, quiet=T)
+print(m2)
+var2 <- paste0(name1, ".out")
+
+}
